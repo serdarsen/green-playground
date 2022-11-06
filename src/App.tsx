@@ -9,8 +9,10 @@ import {
 	Select,
 	Switch,
 	TreeSelect,
+	Checkbox,
 } from 'antd';
 import { useState } from 'react';
+import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 
 type SizeType = Parameters<typeof Form>[0]['size'];
 
@@ -18,10 +20,31 @@ const App: React.FC = () => {
 	const [componentSize, setComponentSize] = useState<SizeType | 'default'>(
 		'default'
 	);
+	const [checkboxGroupValue, setCheckboxGroupValue] = useState<
+		CheckboxValueType[]
+	>(['A', 'B']);
 
-	const onFormLayoutChange = ({ size }: { size: SizeType }) => {
+	const onChangeFormLayout = ({ size }: { size: SizeType }) => {
 		setComponentSize(size);
 	};
+
+	const checkboxGroupItems = [
+		{
+			label:
+				'Lorem ipsum dolor sit amet, onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.',
+			value: 'A',
+		},
+		{
+			label:
+				'Viverra aliquet eget sit amet tellus cras adipiscing. Volutpat odio facilisis mauris sit amet massa vitae.',
+			value: 'B',
+		},
+		{
+			label:
+				'Et odio pellentesque diam volutpat. Sed egestas egestas fringilla phasellus.',
+			value: 'C',
+		},
+	];
 
 	return (
 		<div className="h-screen w-screen flex flex-row justify-center items-center">
@@ -30,9 +53,9 @@ const App: React.FC = () => {
 				wrapperCol={{ span: 14 }}
 				layout="horizontal"
 				initialValues={{ size: componentSize }}
-				onValuesChange={onFormLayoutChange}
+				onValuesChange={onChangeFormLayout}
 				size={componentSize as SizeType}
-				className="w-4/12"
+				className="w-6/12"
 			>
 				<Form.Item label="Form Size" name="size">
 					<Radio.Group>
@@ -47,10 +70,39 @@ const App: React.FC = () => {
 				<Form.Item label="Select">
 					<Select>
 						<Select.Option value="demo">
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-							eiusmod tempor incididunt ut labore et dolore
+							{checkboxGroupItems[0].label}
 						</Select.Option>
 					</Select>
+				</Form.Item>
+				<Form.Item label="Custom Select">
+					<Select
+						value={{
+							key: 'labelOne',
+							label: (
+								<div className="flex flex-row flex-nowrap gap-1">
+									<p className="truncate">{checkboxGroupItems[0].label}</p>
+									<p>+1</p>
+								</div>
+							),
+						}}
+						dropdownRender={() => (
+							<Checkbox.Group
+								onChange={setCheckboxGroupValue}
+								className="w-full"
+								value={checkboxGroupValue}
+							>
+								{checkboxGroupItems.map(({ label, value }) => (
+									<div
+										className="flex flex-row flex-nowrap gap-1 px-1"
+										key={value}
+									>
+										<Checkbox value={value} />
+										<p className="truncate">{label}</p>
+									</div>
+								))}
+							</Checkbox.Group>
+						)}
+					/>
 				</Form.Item>
 				<Form.Item label="TreeSelect">
 					<TreeSelect
